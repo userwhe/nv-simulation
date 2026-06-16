@@ -48,6 +48,13 @@ from nv_5level_two_c13_simulation import (
 )
 
 
+def selected_spin_g_mhz(spin):
+    '''Return the dephasing coefficient used by the n=2 code.'''
+    if hasattr(spin, 'dephasing_g_MHz'):
+        return spin.dephasing_g_MHz
+    return spin.g_MHz
+
+
 def setup_problem(model_params: dict, code):
     H, collapse_ops, rates, dims = make_nv_two_c13_model(**model_params)
     de, dn = dims
@@ -57,16 +64,16 @@ def setup_problem(model_params: dict, code):
     bell = bell_state_psi_plus()
     raw_initial = density(np.kron(electron_g0, bell))
     encoded_initial = density(np.kron(electron_g0, code.encoding_unitary @ bell))
-    return L, rates, de, dn, dim, bell, raw_initial, encoded_initial
+    return L, rates, de, dn, dim, raw_initial, encoded_initial
 
 
-def no_protocol_curve(L, raw_initial, tlist_us, de, dn, dim, bell):
+def no_protocol_curve(L, raw_initial, tlist_us, de, dn, dim):
     raw_vecs = evolve_liouvillian(L, raw_initial, tlist_us)
     values = []
     for rho_v in raw_vecs:
         rho = hermitize(mat(rho_v, dim))
         rho_n = partial_trace_electron(rho, de, dn)
-        values.append(bell_fidelity(rho_n, bell))
+        values.append(bell_fidelity(rho_n))
     return np.asarray(values, dtype=float)
 
 
@@ -79,8 +86,8 @@ def evolve_one_step(L, rho, dt_us, dim):
 def simulate_periodic_recovery(tlist_us, model_params, code, recovery_interval_us):
     if recovery_interval_us <= 0:
         raise ValueError('recovery_interval_us must be positive')
-    L, rates, de, dn, dim, bell, raw_initial, rho_qec = setup_problem(model_params, code)
-    f_without = no_protocol_curve(L, raw_initial, tlist_us, de, dn, dim, bell)
+    L, rates, de, dn, dim, raw_initial, rho_qec = setup_problem(model_params, code)
+    f_without = no_protocol_curve(L, raw_initial, tlist_us, de, dn, dim)
 
     f_with = np.zeros(len(tlist_us))
     traces = np.zeros(len(tlist_us))
@@ -122,8 +129,8 @@ def simulate_single_recovery_trace(tlist_us, model_params, code, recovery_time_u
     if recovery_time_us < 0 or recovery_time_us > float(tlist_us[-1]):
         raise ValueError('single recovery time must lie inside the plotted time range')
 
-    L, rates, de, dn, dim, bell, raw_initial, rho_qec = setup_problem(model_params, code)
-    f_without = no_protocol_curve(L, raw_initial, tlist_us, de, dn, dim, bell)
+    L, rates, de, dn, dim, raw_initial, rho_qec = setup_problem(model_params, code)
+    f_without = no_protocol_curve(L, raw_initial, tlist_us, de, dn, dim)
 
     f_with = np.zeros(len(tlist_us))
     traces = np.zeros(len(tlist_us))
@@ -247,7 +254,7 @@ def main():
     spins = load_dqp_spins(args.dqp_file)
     selected = choose_two_spins(spins, args.selection, tuple(args.spin_indices) if args.spin_indices else None)
     params = model_params_from_spins(selected, B_T=args.B_T, pump_rate=args.pump_rate)
-    code = make_two_qubit_qec_code(tuple(s.dephasing_g_MHz for s in selected))
+    code = make_two_qubit_qec_code(tuple(selected_spin_g_mhz(s) for s in selected))
     tlist = np.arange(0.0, args.time_us + 0.5 * args.plot_dt_us, args.plot_dt_us)
     single_time = args.single_recovery_time_us if args.single_recovery_time_us is not None else 0.5 * args.time_us
 
