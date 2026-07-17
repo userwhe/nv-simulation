@@ -1,27 +1,31 @@
-"""Convenience entry point for the 10 us QEC recovery-cadence run.
-
-This wrapper keeps the main realistic-recovery simulator configurable while
-making the requested run reproducible with:
-
-    python run_qec_realistic_recovery_10us.py
-
-It applies ideal QEC recoveries every 10 us, uses a 0.5 us plot/data sampling
-step, and also produces the exactly-one-recovery trace at t = 10 us.
-"""
+"""Convenience run approximating a 10 us optical-noise/recovery cycle."""
 
 from __future__ import annotations
 
 import sys
 
-from realistic_recovery_interval_simulation import main
+from nv_5level_two_c13_simulation import run_cli
+
 
 DEFAULT_ARGS = [
-    "--recovery-interval-us", "10",
-    "--plot-dt-us", "0.5",
-    "--single-recovery-time-us", "10",
+    "--protocol",
+    "pulsed",
+    "--cycles",
+    "2",
+    "--laser-on-us",
+    "8",
+    "--laser-settle-us",
+    "0.25",
+    "--syndrome-gate-us",
+    "0.75",
+    "--measurement-us",
+    "0.5",
+    "--feedback-latency-us",
+    "0.5",
+    "--correction-gate-us",
+    "0.75",
 ]
 
 
 if __name__ == "__main__":
-    sys.argv = [sys.argv[0], *DEFAULT_ARGS, *sys.argv[1:]]
-    main()
+    run_cli([*DEFAULT_ARGS, *sys.argv[1:]], default_protocol="pulsed")
