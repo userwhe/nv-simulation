@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="780" viewBox="0 0 1100 780">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#111}.title{font-size:23px;font-weight:600}.sub{font-size:12px}.label{font-size:13px}.value{font-size:12px}.axis{stroke:#333;stroke-width:1}.negative{fill:#4c78a8}.positive{fill:#59a14f}</style>
+<text x="550" y="32" text-anchor="middle" class="title">Maximum QEC advantage over the best constituent spin</text>
+<text x="550" y="52" text-anchor="middle" class="sub">phase-calibrated six-state average fidelity; percentage points</text>
+<line x1="980" y1="60" x2="980" y2="748" class="axis"/>
+<text x="130" y="88" text-anchor="end" class="label">S4-X2</text><rect x="980" y="75" width="55" height="18" class="positive"/><text x="1040" y="89" class="value">+0.01785</text>
+<text x="130" y="119" text-anchor="end" class="label">S4-S5</text><rect x="977" y="106" width="3" height="18" class="negative"/><text x="970" y="120" text-anchor="end" class="value">−0.00067</text>
+<text x="130" y="150" text-anchor="end" class="label">S4-S1</text><rect x="976" y="137" width="4" height="18" class="negative"/><text x="969" y="151" text-anchor="end" class="value">−0.00110</text>
+<text x="130" y="181" text-anchor="end" class="label">S4-S6</text><rect x="975" y="168" width="5" height="18" class="negative"/><text x="968" y="182" text-anchor="end" class="value">−0.00125</text>
+<text x="130" y="212" text-anchor="end" class="label">S5-S1</text><rect x="975" y="199" width="5" height="18" class="negative"/><text x="968" y="213" text-anchor="end" class="value">−0.00106</text>
+<text x="130" y="243" text-anchor="end" class="label">S5-S6</text><rect x="973" y="230" width="7" height="18" class="negative"/><text x="966" y="244" text-anchor="end" class="value">−0.00139</text>
+<text x="130" y="274" text-anchor="end" class="label">S6-S1</text><rect x="972" y="261" width="8" height="18" class="negative"/><text x="965" y="275" text-anchor="end" class="value">−0.00157</text>
+<text x="130" y="305" text-anchor="end" class="label">X2-S1</text><rect x="970" y="292" width="10" height="18" class="negative"/><text x="963" y="306" text-anchor="end" class="value">−0.00192</text>
+<text x="130" y="336" text-anchor="end" class="label">X2-S5</text><rect x="971" y="323" width="9" height="18" class="negative"/><text x="964" y="337" text-anchor="end" class="value">−0.00174</text>
+<text x="130" y="367" text-anchor="end" class="label">X2-S6</text><rect x="971" y="354" width="9" height="18" class="negative"/><text x="964" y="368" text-anchor="end" class="value">−0.00178</text>
+<text x="130" y="398" text-anchor="end" class="label">S3-X2</text><rect x="929" y="385" width="51" height="18" class="negative"/><text x="922" y="399" text-anchor="end" class="value">−0.01055</text>
+<text x="130" y="429" text-anchor="end" class="label">S3-S1</text><rect x="928" y="416" width="52" height="18" class="negative"/><text x="921" y="430" text-anchor="end" class="value">−0.01079</text>
+<text x="130" y="460" text-anchor="end" class="label">S3-S4</text><rect x="927" y="447" width="53" height="18" class="negative"/><text x="920" y="461" text-anchor="end" class="value">−0.01097</text>
+<text x="130" y="491" text-anchor="end" class="label">S3-S6</text><rect x="932" y="478" width="48" height="18" class="negative"/><text x="925" y="492" text-anchor="end" class="value">−0.00998</text>
+<text x="130" y="522" text-anchor="end" class="label">S3-S5</text><rect x="929" y="509" width="51" height="18" class="negative"/><text x="922" y="523" text-anchor="end" class="value">−0.01051</text>
+<text x="130" y="553" text-anchor="end" class="label">S2-S3</text><rect x="610" y="540" width="370" height="18" class="negative"/><text x="603" y="554" text-anchor="end" class="value">−0.07617</text>
+<text x="130" y="584" text-anchor="end" class="label">S2-X2</text><rect x="619" y="571" width="361" height="18" class="negative"/><text x="612" y="585" text-anchor="end" class="value">−0.07433</text>
+<text x="130" y="615" text-anchor="end" class="label">S2-S6</text><rect x="634" y="602" width="346" height="18" class="negative"/><text x="627" y="616" text-anchor="end" class="value">−0.07112</text>
+<text x="130" y="646" text-anchor="end" class="label">S2-S5</text><rect x="629" y="633" width="351" height="18" class="negative"/><text x="622" y="647" text-anchor="end" class="value">−0.07229</text>
+<text x="130" y="677" text-anchor="end" class="label">S2-S1</text><rect x="627" y="664" width="353" height="18" class="negative"/><text x="620" y="678" text-anchor="end" class="value">−0.07262</text>
+<text x="130" y="708" text-anchor="end" class="label">S2-S4</text><rect x="624" y="695" width="356" height="18" class="negative"/><text x="617" y="709" text-anchor="end" class="value">−0.07339</text>
+<text x="550" y="758" text-anchor="middle" class="sub">Only S4-X2 is positive in the committed default sweep; its margin is 0.0179 percentage points.</text>
+</svg>
