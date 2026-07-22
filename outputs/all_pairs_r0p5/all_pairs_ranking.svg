@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="760" viewBox="0 0 1050 760">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#111}.title{font-size:23px;font-weight:600}.label{font-size:13px}.value{font-size:12px}.axis{stroke:#333;stroke-width:1}.bar{fill:#4c78a8}.positive{fill:#59a14f}</style>
+<text x="525" y="34" text-anchor="middle" class="title">Maximum QEC advantage over the best constituent spin</text>
+<text x="525" y="56" text-anchor="middle" class="value">six-state average fidelity; percentage points; excited hyperfine r=0.5</text>
+<line x1="832.9" y1="70" x2="832.9" y2="710" class="axis"/>
+<text x="117" y="86" text-anchor="end" class="label">S4-X2</text>
+<rect x="832.9" y="75" width="167.1" height="17" class="positive"/>
+<text x="1005.0" y="87" text-anchor="start" class="value">+0.0184</text>
+<text x="117" y="116" text-anchor="end" class="label">S4-S5</text>
+<rect x="826.7" y="105" width="6.2" height="17" class="bar"/>
+<text x="821.7" y="117" text-anchor="end" class="value">-0.0007</text>
+<text x="117" y="146" text-anchor="end" class="label">S1-S5</text>
+<rect x="823.1" y="135" width="9.8" height="17" class="bar"/>
+<text x="818.1" y="147" text-anchor="end" class="value">-0.0011</text>
+<text x="117" y="176" text-anchor="end" class="label">S1-S4</text>
+<rect x="822.7" y="165" width="10.2" height="17" class="bar"/>
+<text x="817.7" y="177" text-anchor="end" class="value">-0.0011</text>
+<text x="117" y="206" text-anchor="end" class="label">S4-S6</text>
+<rect x="821.3" y="195" width="11.6" height="17" class="bar"/>
+<text x="816.3" y="207" text-anchor="end" class="value">-0.0013</text>
+<text x="117" y="236" text-anchor="end" class="label">S5-S6</text>
+<rect x="820.0" y="225" width="12.9" height="17" class="bar"/>
+<text x="815.0" y="237" text-anchor="end" class="value">-0.0014</text>
+<text x="117" y="266" text-anchor="end" class="label">S1-S6</text>
+<rect x="818.3" y="255" width="14.6" height="17" class="bar"/>
+<text x="813.3" y="267" text-anchor="end" class="value">-0.0016</text>
+<text x="117" y="296" text-anchor="end" class="label">S5-X2</text>
+<rect x="816.8" y="285" width="16.1" height="17" class="bar"/>
+<text x="811.8" y="297" text-anchor="end" class="value">-0.0018</text>
+<text x="117" y="326" text-anchor="end" class="label">S6-X2</text>
+<rect x="816.4" y="315" width="16.5" height="17" class="bar"/>
+<text x="811.4" y="327" text-anchor="end" class="value">-0.0018</text>
+<text x="117" y="356" text-anchor="end" class="label">S1-X2</text>
+<rect x="815.1" y="345" width="17.8" height="17" class="bar"/>
+<text x="810.1" y="357" text-anchor="end" class="value">-0.0020</text>
+<text x="117" y="386" text-anchor="end" class="label">S3-S6</text>
+<rect x="740.1" y="375" width="92.8" height="17" class="bar"/>
+<text x="735.1" y="387" text-anchor="end" class="value">-0.0102</text>
+<text x="117" y="416" text-anchor="end" class="label">S3-S5</text>
+<rect x="735.2" y="405" width="97.7" height="17" class="bar"/>
+<text x="730.2" y="417" text-anchor="end" class="value">-0.0108</text>
+<text x="117" y="446" text-anchor="end" class="label">S3-X2</text>
+<rect x="734.9" y="435" width="98.0" height="17" class="bar"/>
+<text x="729.9" y="447" text-anchor="end" class="value">-0.0108</text>
+<text x="117" y="476" text-anchor="end" class="label">S1-S3</text>
+<rect x="732.6" y="465" width="100.3" height="17" class="bar"/>
+<text x="727.6" y="477" text-anchor="end" class="value">-0.0111</text>
+<text x="117" y="506" text-anchor="end" class="label">S3-S4</text>
+<rect x="730.9" y="495" width="102.0" height="17" class="bar"/>
+<text x="725.9" y="507" text-anchor="end" class="value">-0.0112</text>
+<text x="117" y="536" text-anchor="end" class="label">S2-S6</text>
+<rect x="171.8" y="525" width="661.1" height="17" class="bar"/>
+<text x="166.8" y="537" text-anchor="end" class="value">-0.0729</text>
+<text x="117" y="566" text-anchor="end" class="label">S2-S5</text>
+<rect x="160.9" y="555" width="672.0" height="17" class="bar"/>
+<text x="155.9" y="567" text-anchor="end" class="value">-0.0741</text>
+<text x="117" y="596" text-anchor="end" class="label">S1-S2</text>
+<rect x="157.8" y="585" width="675.1" height="17" class="bar"/>
+<text x="152.8" y="597" text-anchor="end" class="value">-0.0744</text>
+<text x="117" y="626" text-anchor="end" class="label">S2-S4</text>
+<rect x="150.6" y="615" width="682.3" height="17" class="bar"/>
+<text x="145.6" y="627" text-anchor="end" class="value">-0.0752</text>
+<text x="117" y="656" text-anchor="end" class="label">S2-X2</text>
+<rect x="142.0" y="645" width="690.9" height="17" class="bar"/>
+<text x="137.0" y="657" text-anchor="end" class="value">-0.0762</text>
+<text x="117" y="686" text-anchor="end" class="label">S2-S3</text>
+<rect x="125.0" y="675" width="707.9" height="17" class="bar"/>
+<text x="120.0" y="687" text-anchor="end" class="value">-0.0780</text>
+</svg>
