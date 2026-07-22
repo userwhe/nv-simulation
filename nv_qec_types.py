@@ -12,7 +12,7 @@ from typing import Sequence
 import numpy as np
 import scipy.linalg as la
 
-# User-supplied register.  ``minus_A_parallel_kHz`` is the JSON/DQP convention
+# User-supplied register. ``minus_A_parallel_kHz`` is the JSON/DQP convention
 # a_JSON = -A_parallel used by the original repository.
 DEFAULT_DQP_SPINS = [
     {"name": "S1", "minus_A_parallel_kHz": 5.616, "A_perp_kHz": 32.847},
@@ -50,7 +50,6 @@ class DQPSpin:
     @property
     def g_MHz(self) -> float:
         """Signed coefficient used to construct the efficient n=2 code."""
-
         return self.minus_A_par_kHz / 1000.0
 
 
@@ -167,7 +166,6 @@ def bell_fidelity(rho_n: np.ndarray, bell: np.ndarray | None = None) -> float:
 
 def memory_test_states() -> tuple[list[str], list[np.ndarray]]:
     """The six Pauli eigenstates, a qubit projective 2-design."""
-
     zero, one = ket(2, 0), ket(2, 1)
     return (
         ["+Z", "-Z", "+X", "-X", "+Y", "-Y"],
@@ -201,7 +199,6 @@ def phase_calibrated_six_state_fidelity(
     matching the virtual-Z correction normally available in an experiment.
     No renormalization is applied, so leakage counts as failure.
     """
-
     raw = float(np.mean([state_fidelity(t, r) for t, r in zip(targets, outputs)]))
     best = raw
     best_phi = 0.0
@@ -214,6 +211,7 @@ def phase_calibrated_six_state_fidelity(
             best = value
             best_phi = float(phi)
     return raw, best, best_phi
+
 
 # ---------------------------------------------------------------------------
 # Spin loading and code construction
@@ -284,7 +282,6 @@ def choose_two_spins(
 
 def make_two_qubit_qec_code(g_MHz: tuple[float, float]) -> QECCode:
     """Construct the exact n=2 efficient common-fluctuator code and recovery."""
-
     g = np.asarray(g_MHz, dtype=float)
     if abs(g[0]) < abs(g[1]) - 1e-15:
         raise ValueError("Order spins so |g1| >= |g2|")
@@ -327,10 +324,22 @@ def make_two_qubit_qec_code(g_MHz: tuple[float, float]) -> QECCode:
     )
 
 
-def model_params_from_spins(spins: Sequence[DQPSpin], B_T: float, pump_rate: float) -> dict:
+def model_params_from_spins(
+    spins: Sequence[DQPSpin],
+    B_T: float,
+    pump_rate: float,
+    excited_state_hyperfine_scale: float = 0.1,
+) -> dict:
+    """Build model parameters for one pair.
+
+    ``excited_state_hyperfine_scale`` sets the excited ``m_s=-1`` tensor to
+    ``r`` times the ground ``m_s=-1`` tensor for both nuclei.  ``r=0`` recovers
+    the former free-precession excited-state model.
+    """
     return {
         "B_T": float(B_T),
         "A_par_MHz": tuple(s.A_par_MHz for s in spins),
         "A_perp_MHz": tuple(s.A_perp_MHz for s in spins),
         "W_pump_per_us": float(pump_rate),
+        "excited_state_hyperfine_scale": float(excited_state_hyperfine_scale),
     }

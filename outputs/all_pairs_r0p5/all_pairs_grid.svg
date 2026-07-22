@@ -2,7 +2,7 @@
 <rect width="100%" height="100%" fill="white"/>
 <style>text{font-family:Arial,sans-serif;fill:#111}.title{font-size:24px;font-weight:600}.label{font-size:13px;font-weight:600}.note{font-size:11px}.axis{stroke:#ddd;stroke-width:1}.qec{fill:none;stroke:#1f77b4;stroke-width:2}.s0{fill:none;stroke:#ff7f0e;stroke-width:1.3}.s1{fill:none;stroke:#2ca02c;stroke-width:1.3}.best{fill:none;stroke:#d62728;stroke-width:1.6;stroke-dasharray:4 3}</style>
 <text x="590" y="32" text-anchor="middle" class="title">All 21 spin pairs: QEC versus the best constituent spin</text>
-<text x="590" y="54" text-anchor="middle" class="note">Lab-frame model; excited m_s=-1 hyperfine r=0.1; ideal recovery at 10 and 20 us; six-state average fidelity</text>
+<text x="590" y="54" text-anchor="middle" class="note">Lab-frame model; excited m_s=-1 hyperfine r=0.5; ideal recovery at 10 and 20 us; six-state average fidelity</text>
 <line x1="280" y1="76" x2="315" y2="76" class="qec"/><text x="321" y="80" class="note">QEC</text>
 <line x1="385" y1="76" x2="420" y2="76" class="s0"/><text x="426" y="80" class="note">physical g1</text>
 <line x1="525" y1="76" x2="560" y2="76" class="s1"/><text x="566" y="80" class="note">physical g2</text>
@@ -13,145 +13,145 @@
 <polyline points="130,105.1 335,111.2 540,117.7 745,123.4 950,128.5" class="s0"/>
 <polyline points="130,105.1 335,105.1 540,105.2 745,105.3 950,105.3" class="s1"/>
 <polyline points="130,105.1 335,105.1 540,105.2 745,105.3 950,105.3" class="best"/>
-<text x="975" y="120" class="note">Δ20=-2.4629 pp; y≥0.836</text>
+<text x="975" y="120" class="note">Δ20=-2.5014 pp; y≥0.834</text>
 <text x="78" y="160" text-anchor="end" class="label">S1-S3</text>
 <line x1="130" y1="172" x2="950" y2="172" class="axis"/>
 <polyline points="130,145.5 335,153.2 540,151.4 745,160.3 950,157.6" class="qec"/>
 <polyline points="130,145.5 335,150.5 540,156.1 745,161.7 950,167.3" class="s0"/>
-<polyline points="130,145.5 335,145.9 540,146.3 745,146.6 950,147.0" class="s1"/>
-<polyline points="130,145.5 335,145.9 540,146.3 745,146.6 950,147.0" class="best"/>
-<text x="975" y="160" class="note">Δ20=-1.0291 pp; y≥0.974</text>
+<polyline points="130,145.5 335,145.8 540,146.2 745,146.6 950,147.0" class="s1"/>
+<polyline points="130,145.5 335,145.8 540,146.2 745,146.6 950,147.0" class="best"/>
+<text x="975" y="160" class="note">Δ20=-1.0483 pp; y≥0.974</text>
 <text x="78" y="200" text-anchor="end" class="label">S1-S4</text>
 <line x1="130" y1="212" x2="950" y2="212" class="axis"/>
-<polyline points="130,188.1 335,193.4 540,193.2 745,199.3 950,198.6" class="qec"/>
-<polyline points="130,188.1 335,190.2 540,192.0 745,194.5 950,196.3" class="s0"/>
+<polyline points="130,188.1 335,193.4 540,193.2 745,199.4 950,198.6" class="qec"/>
+<polyline points="130,188.1 335,190.1 540,192.0 745,194.5 950,196.3" class="s0"/>
 <polyline points="130,188.1 335,190.2 540,192.6 745,194.9 950,197.0" class="s1"/>
-<polyline points="130,188.1 335,190.2 540,192.0 745,194.5 950,196.3" class="best"/>
-<text x="975" y="200" class="note">Δ20=-0.0368 pp; y≥0.996</text>
+<polyline points="130,188.1 335,190.1 540,192.0 745,194.5 950,196.3" class="best"/>
+<text x="975" y="200" class="note">Δ20=-0.0374 pp; y≥0.996</text>
 <text x="78" y="240" text-anchor="end" class="label">S1-S5</text>
 <line x1="130" y1="252" x2="950" y2="252" class="axis"/>
-<polyline points="130,228.8 335,233.4 540,234.4 745,239.6 950,240.2" class="qec"/>
+<polyline points="130,228.8 335,233.4 540,234.4 745,239.6 950,240.3" class="qec"/>
 <polyline points="130,228.8 335,231.3 540,234.3 745,237.1 950,239.6" class="s0"/>
-<polyline points="130,228.8 335,229.9 540,231.1 745,232.4 950,233.7" class="s1"/>
-<polyline points="130,228.8 335,229.9 540,231.1 745,232.4 950,233.7" class="best"/>
-<text x="975" y="240" class="note">Δ20=-0.0859 pp; y≥0.997</text>
+<polyline points="130,228.8 335,229.8 540,231.1 745,232.3 950,233.6" class="s1"/>
+<polyline points="130,228.8 335,229.8 540,231.1 745,232.3 950,233.6" class="best"/>
+<text x="975" y="240" class="note">Δ20=-0.0879 pp; y≥0.997</text>
 <text x="78" y="280" text-anchor="end" class="label">S1-S6</text>
 <line x1="130" y1="292" x2="950" y2="292" class="axis"/>
-<polyline points="130,267.8 335,273.3 540,274.4 745,280.8 950,281.3" class="qec"/>
-<polyline points="130,267.8 335,270.2 540,272.9 745,275.6 950,278.1" class="s0"/>
-<polyline points="130,267.8 335,269.6 540,271.7 745,273.7 950,275.5" class="s1"/>
-<polyline points="130,267.8 335,269.6 540,271.7 745,273.7 950,275.5" class="best"/>
-<text x="975" y="280" class="note">Δ20=-0.1053 pp; y≥0.996</text>
+<polyline points="130,267.7 335,273.3 540,274.4 745,280.8 950,281.4" class="qec"/>
+<polyline points="130,267.7 335,270.2 540,272.9 745,275.6 950,278.2" class="s0"/>
+<polyline points="130,267.7 335,269.5 540,271.7 745,273.7 950,275.5" class="s1"/>
+<polyline points="130,267.7 335,269.5 540,271.7 745,273.7 950,275.5" class="best"/>
+<text x="975" y="280" class="note">Δ20=-0.1075 pp; y≥0.996</text>
 <text x="78" y="320" text-anchor="end" class="label">S1-X2</text>
 <line x1="130" y1="332" x2="950" y2="332" class="axis"/>
 <polyline points="130,306.7 335,314.0 540,310.0 745,318.5 950,313.5" class="qec"/>
 <polyline points="130,306.7 335,310.2 540,314.4 745,318.7 950,323.0" class="s0"/>
-<polyline points="130,306.7 335,307.8 540,309.1 745,310.4 950,311.5" class="s1"/>
-<polyline points="130,306.7 335,307.8 540,309.1 745,310.4 950,311.5" class="best"/>
-<text x="975" y="320" class="note">Δ20=-0.0595 pp; y≥0.993</text>
+<polyline points="130,306.7 335,307.8 540,309.1 745,310.3 950,311.5" class="s1"/>
+<polyline points="130,306.7 335,307.8 540,309.1 745,310.3 950,311.5" class="best"/>
+<text x="975" y="320" class="note">Δ20=-0.0607 pp; y≥0.992</text>
 <text x="78" y="360" text-anchor="end" class="label">S2-S3</text>
 <line x1="130" y1="372" x2="950" y2="372" class="axis"/>
-<polyline points="130,345.1 335,354.7 540,348.4 745,359.3 950,352.0" class="qec"/>
-<polyline points="130,345.1 335,351.0 540,357.3 745,362.8 950,367.8" class="s0"/>
-<polyline points="130,345.1 335,345.8 540,346.7 745,347.6 950,348.4" class="s1"/>
-<polyline points="130,345.1 335,345.8 540,346.7 745,347.6 950,348.4" class="best"/>
-<text x="975" y="360" class="note">Δ20=-2.2605 pp; y≥0.831</text>
+<polyline points="130,345.1 335,354.7 540,348.5 745,359.4 950,352.1" class="qec"/>
+<polyline points="130,345.1 335,351.0 540,357.3 745,362.8 950,367.7" class="s0"/>
+<polyline points="130,345.1 335,345.8 540,346.7 745,347.6 950,348.5" class="s1"/>
+<polyline points="130,345.1 335,345.8 540,346.7 745,347.6 950,348.5" class="best"/>
+<text x="975" y="360" class="note">Δ20=-2.3024 pp; y≥0.828</text>
 <text x="78" y="400" text-anchor="end" class="label">S2-S4</text>
 <line x1="130" y1="412" x2="950" y2="412" class="axis"/>
 <polyline points="130,385.1 335,395.2 540,387.2 745,398.7 950,389.4" class="qec"/>
-<polyline points="130,385.1 335,391.3 540,397.8 745,403.5 950,408.7" class="s0"/>
+<polyline points="130,385.1 335,391.3 540,397.8 745,403.5 950,408.6" class="s0"/>
 <polyline points="130,385.1 335,385.1 540,385.2 745,385.2 950,385.3" class="s1"/>
 <polyline points="130,385.1 335,385.1 540,385.2 745,385.2 950,385.3" class="best"/>
-<text x="975" y="400" class="note">Δ20=-2.4727 pp; y≥0.837</text>
+<text x="975" y="400" class="note">Δ20=-2.5122 pp; y≥0.835</text>
 <text x="78" y="440" text-anchor="end" class="label">S2-S5</text>
 <line x1="130" y1="452" x2="950" y2="452" class="axis"/>
-<polyline points="130,425.1 335,435.2 540,427.1 745,438.6 950,429.3" class="qec"/>
-<polyline points="130,425.1 335,431.2 540,437.7 745,443.5 950,448.6" class="s0"/>
+<polyline points="130,425.1 335,435.3 540,427.1 745,438.7 950,429.3" class="qec"/>
+<polyline points="130,425.1 335,431.3 540,437.7 745,443.5 950,448.5" class="s0"/>
 <polyline points="130,425.1 335,425.1 540,425.1 745,425.2 950,425.2" class="s1"/>
 <polyline points="130,425.1 335,425.1 540,425.1 745,425.2 950,425.2" class="best"/>
-<text x="975" y="440" class="note">Δ20=-2.4660 pp; y≥0.837</text>
+<text x="975" y="440" class="note">Δ20=-2.5047 pp; y≥0.834</text>
 <text x="78" y="480" text-anchor="end" class="label">S2-S6</text>
 <line x1="130" y1="492" x2="950" y2="492" class="axis"/>
-<polyline points="130,465.1 335,475.2 540,467.2 745,478.7 950,469.4" class="qec"/>
+<polyline points="130,465.1 335,475.3 540,467.2 745,478.7 950,469.4" class="qec"/>
 <polyline points="130,465.1 335,471.2 540,477.6 745,483.3 950,488.4" class="s0"/>
 <polyline points="130,465.1 335,465.2 540,465.2 745,465.3 950,465.4" class="s1"/>
 <polyline points="130,465.1 335,465.2 540,465.2 745,465.3 950,465.4" class="best"/>
-<text x="975" y="480" class="note">Δ20=-2.4620 pp; y≥0.836</text>
+<text x="975" y="480" class="note">Δ20=-2.5003 pp; y≥0.833</text>
 <text x="78" y="520" text-anchor="end" class="label">S2-X2</text>
 <line x1="130" y1="532" x2="950" y2="532" class="axis"/>
-<polyline points="130,505.1 335,515.0 540,507.4 745,518.8 950,510.0" class="qec"/>
+<polyline points="130,505.1 335,515.1 540,507.4 745,518.8 950,510.0" class="qec"/>
 <polyline points="130,505.1 335,511.3 540,517.8 745,523.6 950,528.7" class="s0"/>
 <polyline points="130,505.1 335,505.3 540,505.5 745,505.7 950,505.9" class="s1"/>
 <polyline points="130,505.1 335,505.3 540,505.5 745,505.7 950,505.9" class="best"/>
-<text x="975" y="520" class="note">Δ20=-2.4660 pp; y≥0.838</text>
+<text x="975" y="520" class="note">Δ20=-2.5073 pp; y≥0.835</text>
 <text x="78" y="560" text-anchor="end" class="label">S3-S4</text>
 <line x1="130" y1="572" x2="950" y2="572" class="axis"/>
-<polyline points="130,545.6 335,553.1 540,551.3 745,560.2 950,557.5" class="qec"/>
-<polyline points="130,545.6 335,551.0 540,557.1 745,563.3 950,569.4" class="s0"/>
+<polyline points="130,545.6 335,553.1 540,551.3 745,560.2 950,557.4" class="qec"/>
+<polyline points="130,545.6 335,551.0 540,557.1 745,563.3 950,569.3" class="s0"/>
 <polyline points="130,545.6 335,545.9 540,546.3 745,546.7 950,547.0" class="s1"/>
 <polyline points="130,545.6 335,545.9 540,546.3 745,546.7 950,547.0" class="best"/>
-<text x="975" y="560" class="note">Δ20=-0.9246 pp; y≥0.977</text>
+<text x="975" y="560" class="note">Δ20=-0.9419 pp; y≥0.976</text>
 <text x="78" y="600" text-anchor="end" class="label">S3-S5</text>
 <line x1="130" y1="612" x2="950" y2="612" class="axis"/>
 <polyline points="130,585.5 335,593.3 540,591.3 745,600.2 950,597.3" class="qec"/>
-<polyline points="130,585.5 335,590.7 540,596.5 745,602.3 950,608.0" class="s0"/>
-<polyline points="130,585.5 335,585.7 540,585.9 745,586.0 950,586.2" class="s1"/>
-<polyline points="130,585.5 335,585.7 540,585.9 745,586.0 950,586.2" class="best"/>
-<text x="975" y="600" class="note">Δ20=-1.0390 pp; y≥0.975</text>
+<polyline points="130,585.5 335,590.6 540,596.5 745,602.3 950,608.0" class="s0"/>
+<polyline points="130,585.5 335,585.7 540,585.8 745,586.0 950,586.2" class="s1"/>
+<polyline points="130,585.5 335,585.7 540,585.8 745,586.0 950,586.2" class="best"/>
+<text x="975" y="600" class="note">Δ20=-1.0586 pp; y≥0.975</text>
 <text x="78" y="640" text-anchor="end" class="label">S3-S6</text>
 <line x1="130" y1="652" x2="950" y2="652" class="axis"/>
-<polyline points="130,625.5 335,633.4 540,631.5 745,640.5 950,637.8" class="qec"/>
-<polyline points="130,625.5 335,630.4 540,635.9 745,641.3 950,646.8" class="s0"/>
-<polyline points="130,625.5 335,626.0 540,626.5 745,627.0 950,627.4" class="s1"/>
-<polyline points="130,625.5 335,626.0 540,626.5 745,627.0 950,627.4" class="best"/>
-<text x="975" y="640" class="note">Δ20=-1.0256 pp; y≥0.974</text>
+<polyline points="130,625.5 335,633.4 540,631.5 745,640.4 950,637.7" class="qec"/>
+<polyline points="130,625.5 335,630.3 540,635.9 745,641.3 950,646.8" class="s0"/>
+<polyline points="130,625.5 335,625.9 540,626.4 745,626.9 950,627.4" class="s1"/>
+<polyline points="130,625.5 335,625.9 540,626.4 745,626.9 950,627.4" class="best"/>
+<text x="975" y="640" class="note">Δ20=-1.0448 pp; y≥0.973</text>
 <text x="78" y="680" text-anchor="end" class="label">S3-X2</text>
 <line x1="130" y1="692" x2="950" y2="692" class="axis"/>
 <polyline points="130,665.6 335,671.8 540,670.7 745,678.2 950,676.1" class="qec"/>
-<polyline points="130,665.6 335,671.2 540,677.5 745,683.8 950,690.0" class="s0"/>
+<polyline points="130,665.6 335,671.1 540,677.5 745,683.8 950,690.0" class="s0"/>
 <polyline points="130,665.6 335,666.8 540,668.2 745,669.7 950,671.1" class="s1"/>
 <polyline points="130,665.6 335,666.8 540,668.2 745,669.7 950,671.1" class="best"/>
-<text x="975" y="680" class="note">Δ20=-0.4328 pp; y≥0.977</text>
+<text x="975" y="680" class="note">Δ20=-0.4397 pp; y≥0.977</text>
 <text x="78" y="720" text-anchor="end" class="label">S4-S5</text>
 <line x1="130" y1="732" x2="950" y2="732" class="axis"/>
-<polyline points="130,708.9 335,713.7 540,712.5 745,718.0 950,716.2" class="qec"/>
-<polyline points="130,708.9 335,711.4 540,713.7 745,716.7 950,719.0" class="s0"/>
-<polyline points="130,708.9 335,710.0 540,711.2 745,712.5 950,713.8" class="s1"/>
-<polyline points="130,708.9 335,710.0 540,711.2 745,712.5 950,713.8" class="best"/>
-<text x="975" y="720" class="note">Δ20=-0.0310 pp; y≥0.997</text>
+<polyline points="130,708.8 335,713.7 540,712.4 745,718.0 950,716.2" class="qec"/>
+<polyline points="130,708.8 335,711.4 540,713.7 745,716.8 950,719.1" class="s0"/>
+<polyline points="130,708.8 335,709.9 540,711.2 745,712.5 950,713.8" class="s1"/>
+<polyline points="130,708.8 335,709.9 540,711.2 745,712.5 950,713.8" class="best"/>
+<text x="975" y="720" class="note">Δ20=-0.0318 pp; y≥0.997</text>
 <text x="78" y="760" text-anchor="end" class="label">S4-S6</text>
 <line x1="130" y1="772" x2="950" y2="772" class="axis"/>
-<polyline points="130,747.8 335,753.5 540,753.6 745,760.1 950,759.8" class="qec"/>
-<polyline points="130,747.8 335,749.6 540,751.2 745,753.4 950,755.0" class="s0"/>
-<polyline points="130,747.8 335,750.2 540,753.0 745,755.7 950,758.3" class="s1"/>
-<polyline points="130,747.8 335,749.6 540,751.2 745,753.4 950,755.0" class="best"/>
-<text x="975" y="760" class="note">Δ20=-0.0857 pp; y≥0.996</text>
+<polyline points="130,747.7 335,753.5 540,753.6 745,760.2 950,759.8" class="qec"/>
+<polyline points="130,747.7 335,749.6 540,751.2 745,753.4 950,755.0" class="s0"/>
+<polyline points="130,747.7 335,750.2 540,753.0 745,755.7 950,758.3" class="s1"/>
+<polyline points="130,747.7 335,749.6 540,751.2 745,753.4 950,755.0" class="best"/>
+<text x="975" y="760" class="note">Δ20=-0.0873 pp; y≥0.996</text>
 <text x="78" y="800" text-anchor="end" class="label">S4-X2</text>
 <line x1="130" y1="812" x2="950" y2="812" class="axis"/>
-<polyline points="130,787.2 335,793.7 540,789.5 745,797.3 950,792.0" class="qec"/>
-<polyline points="130,787.2 335,791.6 540,796.9 745,802.3 950,807.7" class="s0"/>
-<polyline points="130,787.2 335,788.6 540,789.8 745,791.5 950,792.8" class="s1"/>
-<polyline points="130,787.2 335,788.6 540,789.8 745,791.5 950,792.8" class="best"/>
-<text x="975" y="800" class="note">Δ20=+0.0180 pp; y≥0.994</text>
+<polyline points="130,787.1 335,793.7 540,789.5 745,797.3 950,792.0" class="qec"/>
+<polyline points="130,787.1 335,791.5 540,796.9 745,802.3 950,807.8" class="s0"/>
+<polyline points="130,787.1 335,788.5 540,789.8 745,791.5 950,792.7" class="s1"/>
+<polyline points="130,787.1 335,788.5 540,789.8 745,791.5 950,792.7" class="best"/>
+<text x="975" y="800" class="note">Δ20=+0.0184 pp; y≥0.994</text>
 <text x="78" y="840" text-anchor="end" class="label">S5-S6</text>
 <line x1="130" y1="852" x2="950" y2="852" class="axis"/>
-<polyline points="130,828.3 335,833.1 540,834.8 745,840.3 950,841.6" class="qec"/>
-<polyline points="130,828.3 335,831.2 540,834.5 745,837.7 950,840.7" class="s0"/>
-<polyline points="130,828.3 335,829.2 540,830.2 745,831.3 950,832.5" class="s1"/>
-<polyline points="130,828.3 335,829.2 540,830.2 745,831.3 950,832.5" class="best"/>
-<text x="975" y="840" class="note">Δ20=-0.1386 pp; y≥0.996</text>
+<polyline points="130,828.2 335,833.1 540,834.8 745,840.4 950,841.6" class="qec"/>
+<polyline points="130,828.2 335,831.2 540,834.5 745,837.7 950,840.7" class="s0"/>
+<polyline points="130,828.2 335,829.2 540,830.2 745,831.3 950,832.4" class="s1"/>
+<polyline points="130,828.2 335,829.2 540,830.2 745,831.3 950,832.4" class="best"/>
+<text x="975" y="840" class="note">Δ20=-0.1417 pp; y≥0.996</text>
 <text x="78" y="880" text-anchor="end" class="label">S5-X2</text>
 <line x1="130" y1="892" x2="950" y2="892" class="axis"/>
 <polyline points="130,866.9 335,874.2 540,869.2 745,877.8 950,871.7" class="qec"/>
-<polyline points="130,866.9 335,870.8 540,875.5 745,880.3 950,885.0" class="s0"/>
-<polyline points="130,866.9 335,867.4 540,868.0 745,868.7 950,869.3" class="s1"/>
-<polyline points="130,866.9 335,867.4 540,868.0 745,868.7 950,869.3" class="best"/>
-<text x="975" y="880" class="note">Δ20=-0.0636 pp; y≥0.993</text>
+<polyline points="130,866.9 335,870.8 540,875.5 745,880.3 950,885.1" class="s0"/>
+<polyline points="130,866.9 335,867.4 540,868.0 745,868.6 950,869.3" class="s1"/>
+<polyline points="130,866.9 335,867.4 540,868.0 745,868.6 950,869.3" class="best"/>
+<text x="975" y="880" class="note">Δ20=-0.0651 pp; y≥0.993</text>
 <text x="78" y="920" text-anchor="end" class="label">S6-X2</text>
 <line x1="130" y1="932" x2="950" y2="932" class="axis"/>
-<polyline points="130,906.6 335,914.1 540,910.5 745,919.0 950,914.6" class="qec"/>
+<polyline points="130,906.6 335,914.1 540,910.5 745,919.1 950,914.5" class="qec"/>
 <polyline points="130,906.6 335,909.8 540,913.8 745,917.8 950,921.8" class="s0"/>
 <polyline points="130,906.6 335,908.0 540,909.6 745,911.1 950,912.6" class="s1"/>
 <polyline points="130,906.6 335,908.0 540,909.6 745,911.1 950,912.6" class="best"/>
-<text x="975" y="920" class="note">Δ20=-0.0618 pp; y≥0.992</text>
+<text x="975" y="920" class="note">Δ20=-0.0632 pp; y≥0.992</text>
 </svg>

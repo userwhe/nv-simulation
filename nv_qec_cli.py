@@ -13,6 +13,7 @@ import numpy as np
 from nv_qec_types import *
 from nv_qec_benchmarks import *
 
+
 # ---------------------------------------------------------------------------
 # Output and validation
 # ---------------------------------------------------------------------------
@@ -78,11 +79,16 @@ def plot_process_fidelity(result: dict, selected: Sequence[DQPSpin], path: Path)
     r = min(abs(selected[0].g_MHz), abs(selected[1].g_MHz)) / max(
         abs(selected[0].g_MHz), abs(selected[1].g_MHz)
     )
+    excited_scale = result.get("rates", {}).get("excited_state_hyperfine_scale")
+    excited_text = (
+        f"excited m_s=-1 hyperfine scale={float(excited_scale):.3g}"
+        if excited_scale is not None
+        else "excited-state hyperfine scale not recorded"
+    )
     ax.text(
         0.02,
         0.03,
-        f"{protocol}\n|gmin/gmax|={r:.3f}; virtual-Z phase calibrated\n"
-        "five-level optical model remains a simplified ground-state-hyperfine model",
+        f"{protocol}\n|gmin/gmax|={r:.3f}; virtual-Z phase calibrated\n{excited_text}",
         transform=ax.transAxes,
         fontsize=7.8,
         va="bottom",
@@ -137,6 +143,15 @@ def parse_args(argv: Sequence[str] | None = None, default_protocol: str = "ideal
     parser.add_argument("--recovery-interval-us", type=float, default=10.0)
     parser.add_argument("--B-T", type=float, default=0.05)
     parser.add_argument("--pump-rate", type=float, default=5.0)
+    parser.add_argument(
+        "--excited-hyperfine-scale",
+        type=float,
+        default=0.1,
+        help=(
+            "scale r for excited m_s=-1 hyperfine: A_parallel,e=r*A_parallel,g and "
+            "A_perp,e=r*A_perp,g; use 0 for the former free-precession model"
+        ),
+    )
     parser.add_argument("--output-dir", default="outputs")
     parser.add_argument("--cycles", type=int, default=2)
     parser.add_argument("--laser-on-us", type=float, default=8.0)
@@ -161,7 +176,12 @@ def run_cli(argv: Sequence[str] | None = None, default_protocol: str = "ideal") 
         tuple(args.spin_indices) if args.spin_indices else None,
         tuple(args.spin_names) if args.spin_names else None,
     )
-    params = model_params_from_spins(selected, args.B_T, args.pump_rate)
+    params = model_params_from_spins(
+        selected,
+        args.B_T,
+        args.pump_rate,
+        excited_state_hyperfine_scale=args.excited_hyperfine_scale,
+    )
     code = make_two_qubit_qec_code(tuple(s.g_MHz for s in selected))
 
     if args.protocol == "ideal":
@@ -196,6 +216,7 @@ def run_cli(argv: Sequence[str] | None = None, default_protocol: str = "ideal") 
     print("Simulation completed.")
     print(f"Protocol: {args.protocol}")
     print(f"Selected spins: {_selected_spin_text(selected)}")
+    print(f"Excited-state hyperfine scale: {args.excited_hyperfine_scale:.9g}")
     print(f"Final QEC average fidelity: {result['qec'][-1]:.6f}")
     print(f"Final best-single fidelity: {result['best_single'][-1]:.6f}")
     print(f"Final QEC - best single: {result['qec_minus_best'][-1]:+.6f}")

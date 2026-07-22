@@ -30,9 +30,13 @@ def safe_name(text: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", text)
 
 
-def write_compact_grid_svg(spins, output_dir: Path, summary_rows: list[dict[str, object]]) -> None:
+def write_compact_grid_svg(
+    spins,
+    output_dir: Path,
+    summary_rows: list[dict[str, object]],
+    excited_hyperfine_scale: float,
+) -> None:
     """Write a compact 21-row SVG with one sparkline panel per spin pair."""
-
     width, height = 1180, 980
     label_x, plot_x, plot_w, top, row_h = 78, 130, 820, 105, 40
     lines = [
@@ -40,7 +44,7 @@ def write_compact_grid_svg(spins, output_dir: Path, summary_rows: list[dict[str,
         '<rect width="100%" height="100%" fill="white"/>',
         '<style>text{font-family:Arial,sans-serif;fill:#111}.title{font-size:24px;font-weight:600}.label{font-size:13px;font-weight:600}.note{font-size:11px}.axis{stroke:#ddd;stroke-width:1}.qec{fill:none;stroke:#1f77b4;stroke-width:2}.s0{fill:none;stroke:#ff7f0e;stroke-width:1.3}.s1{fill:none;stroke:#2ca02c;stroke-width:1.3}.best{fill:none;stroke:#d62728;stroke-width:1.6;stroke-dasharray:4 3}</style>',
         '<text x="590" y="32" text-anchor="middle" class="title">All 21 spin pairs: QEC versus the best constituent spin</text>',
-        '<text x="590" y="54" text-anchor="middle" class="note">Lab-frame simplified model; ideal recovery at 10 and 20 us; phase-calibrated six-state average fidelity</text>',
+        f'<text x="590" y="54" text-anchor="middle" class="note">Lab-frame model; excited m_s=-1 hyperfine r={excited_hyperfine_scale:.3g}; ideal recovery at 10 and 20 us; six-state average fidelity</text>',
         '<line x1="280" y1="76" x2="315" y2="76" class="qec"/><text x="321" y="80" class="note">QEC</text>',
         '<line x1="385" y1="76" x2="420" y2="76" class="s0"/><text x="426" y="80" class="note">physical g1</text>',
         '<line x1="525" y1="76" x2="560" y2="76" class="s1"/><text x="566" y="80" class="note">physical g2</text>',
@@ -100,9 +104,12 @@ def write_compact_grid_svg(spins, output_dir: Path, summary_rows: list[dict[str,
     (output_dir / "all_pairs_grid.svg").write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_compact_ranking_svg(output_dir: Path, ranked: list[dict[str, object]]) -> None:
+def write_compact_ranking_svg(
+    output_dir: Path,
+    ranked: list[dict[str, object]],
+    excited_hyperfine_scale: float,
+) -> None:
     """Write a compact dependency-free SVG ranking of every pair."""
-
     width, height = 1050, 760
     left, right, top, row_h = 125, 50, 75, 30
     values = [100.0 * float(row["maximum_qec_minus_best_single"]) for row in ranked]
@@ -114,7 +121,7 @@ def write_compact_ranking_svg(output_dir: Path, ranked: list[dict[str, object]])
         '<rect width="100%" height="100%" fill="white"/>',
         '<style>text{font-family:Arial,sans-serif;fill:#111}.title{font-size:23px;font-weight:600}.label{font-size:13px}.value{font-size:12px}.axis{stroke:#333;stroke-width:1}.bar{fill:#4c78a8}.positive{fill:#59a14f}</style>',
         '<text x="525" y="34" text-anchor="middle" class="title">Maximum QEC advantage over the best constituent spin</text>',
-        '<text x="525" y="56" text-anchor="middle" class="value">phase-calibrated six-state average fidelity; percentage points</text>',
+        f'<text x="525" y="56" text-anchor="middle" class="value">six-state average fidelity; percentage points; excited hyperfine r={excited_hyperfine_scale:.3g}</text>',
         f'<line x1="{x_zero:.1f}" y1="70" x2="{x_zero:.1f}" y2="710" class="axis"/>',
     ]
     for index, row in enumerate(ranked):
@@ -140,6 +147,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--recovery-interval-us", type=float, default=10.0)
     parser.add_argument("--B-T", type=float, default=0.05)
     parser.add_argument("--pump-rate", type=float, default=5.0)
+    parser.add_argument(
+        "--excited-hyperfine-scale",
+        type=float,
+        default=0.1,
+        help="excited m_s=-1 tensor scale relative to the ground m_s=-1 tensor",
+    )
     parser.add_argument("--output-dir", default="outputs/all_pairs")
     parser.add_argument("--skip-checks", action="store_true")
     parser.add_argument("--force", action="store_true", help="recompute pairs even when CSV/SVG outputs exist")
@@ -150,6 +163,8 @@ def main() -> None:
     args = parse_args()
     if args.time_us <= 0 or args.plot_dt_us <= 0 or args.recovery_interval_us <= 0:
         raise ValueError("time, plot step, and recovery interval must be positive")
+    if not np.isfinite(args.excited_hyperfine_scale):
+        raise ValueError("excited hyperfine scale must be finite")
 
     spins = load_dqp_spins(args.dqp_file)
     output_dir = Path(args.output_dir)
@@ -160,7 +175,12 @@ def main() -> None:
     for first, second in itertools.combinations(spins, 2):
         selected = choose_two_spins(spins, spin_names=(first.name, second.name))
         code = make_two_qubit_qec_code(tuple(s.g_MHz for s in selected))
-        params = model_params_from_spins(selected, args.B_T, args.pump_rate)
+        params = model_params_from_spins(
+            selected,
+            args.B_T,
+            args.pump_rate,
+            excited_state_hyperfine_scale=args.excited_hyperfine_scale,
+        )
         pair_label = f"{first.name}-{second.name}"
         stem = safe_name(pair_label)
         svg_path = output_dir / f"{stem}.svg"
@@ -176,6 +196,8 @@ def main() -> None:
                 "spin1": np.atleast_1d(data[f"{selected[1].name}_average_fidelity_phase_calibrated"]).astype(float),
                 "best_single": np.atleast_1d(data["best_single_average_fidelity"]).astype(float),
                 "qec_minus_best": np.atleast_1d(data["qec_minus_best_single"]).astype(float),
+                "recovery_count": np.atleast_1d(data["recovery_count"]).astype(int),
+                "rates": {"excited_state_hyperfine_scale": args.excited_hyperfine_scale},
             }
             print(f"{pair_label:8s} reused existing output")
         else:
@@ -195,6 +217,7 @@ def main() -> None:
                 "ordered_g1_spin": selected[0].name,
                 "ordered_g2_spin": selected[1].name,
                 "coupling_ratio_abs_gmin_over_gmax": ratio,
+                "excited_state_hyperfine_scale": float(args.excited_hyperfine_scale),
                 "final_qec_average_fidelity": float(result["qec"][-1]),
                 "final_best_single_average_fidelity": float(result["best_single"][-1]),
                 "final_qec_minus_best_single": float(improvement[-1]),
@@ -217,8 +240,8 @@ def main() -> None:
         writer.writerows(summary_rows)
 
     ranked = sorted(summary_rows, key=lambda row: float(row["maximum_qec_minus_best_single"]), reverse=True)
-    write_compact_ranking_svg(output_dir, ranked)
-    write_compact_grid_svg(spins, output_dir, summary_rows)
+    write_compact_ranking_svg(output_dir, ranked, args.excited_hyperfine_scale)
+    write_compact_grid_svg(spins, output_dir, summary_rows, args.excited_hyperfine_scale)
 
     print(f"Wrote {len(summary_rows)} pair plots and CSV files to {output_dir}")
     print(f"Summary: {summary_path}")

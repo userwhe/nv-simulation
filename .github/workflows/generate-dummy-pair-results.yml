@@ -1,0 +1,172 @@
+name: Generate dummy-pair sanity results
+
+on:
+  push:
+    branches:
+      - agent/fix-process-frame-pulsed-pairs
+    paths:
+      - .github/workflows/generate-dummy-pair-results.yml
+      - examples/dummy_pair.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-results:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the result branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/fix-process-frame-pulsed-pairs
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Run regression tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Generate ideal dummy-pair result at excited-state scale r=0.1
+        run: |
+          python nv_5level_two_c13_simulation.py \
+            --dqp-file examples/dummy_pair.json \
+            --spin-names Dm50 Dp80 \
+            --protocol ideal \
+            --time-us 20 \
+            --plot-dt-us 0.5 \
+            --recovery-interval-us 10 \
+            --B-T 0.05 \
+            --pump-rate 5 \
+            --excited-hyperfine-scale 0.1 \
+            --output-dir outputs/dummy_pair/r0p1
+
+      - name: Generate ideal dummy-pair result at excited-state scale r=0.5
+        run: |
+          python nv_5level_two_c13_simulation.py \
+            --dqp-file examples/dummy_pair.json \
+            --spin-names Dm50 Dp80 \
+            --protocol ideal \
+            --time-us 20 \
+            --plot-dt-us 0.5 \
+            --recovery-interval-us 10 \
+            --B-T 0.05 \
+            --pump-rate 5 \
+            --excited-hyperfine-scale 0.5 \
+            --output-dir outputs/dummy_pair/r0p5
+
+      - name: Build comparison plot and summary
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import csv
+          from pathlib import Path
+
+          import matplotlib.pyplot as plt
+          import numpy as np
+
+          root = Path("outputs/dummy_pair")
+          cases = [
+              (0.1, root / "r0p1" / "Dp80_Dm50_ideal_process.csv"),
+              (0.5, root / "r0p5" / "Dp80_Dm50_ideal_process.csv"),
+          ]
+          summaries = []
+
+          plt.figure(figsize=(8.2, 5.2))
+          for scale, path in cases:
+              data = np.genfromtxt(path, delimiter=",", names=True, dtype=None, encoding="utf-8")
+              t = np.atleast_1d(data["t_us"]).astype(float)
+              qec = np.atleast_1d(data["qec_average_fidelity_phase_calibrated"]).astype(float)
+              best = np.atleast_1d(data["best_single_average_fidelity"]).astype(float)
+              delta = np.atleast_1d(data["qec_minus_best_single"]).astype(float)
+              nonzero = np.where(t > 1e-12)[0]
+              imax = int(nonzero[np.argmax(delta[nonzero])])
+              summaries.append(
+                  {
+                      "excited_state_hyperfine_scale": scale,
+                      "final_qec_average_fidelity": float(qec[-1]),
+                      "final_best_single_average_fidelity": float(best[-1]),
+                      "final_qec_minus_best_single": float(delta[-1]),
+                      "maximum_qec_minus_best_single": float(delta[imax]),
+                      "time_of_maximum_improvement_us": float(t[imax]),
+                  }
+              )
+              plt.plot(t, 100.0 * delta, label=f"excited hyperfine r={scale:g}")
+
+          plt.axhline(0.0, linestyle="--", linewidth=1.0)
+          plt.xlabel("Elapsed time (µs)")
+          plt.ylabel("QEC - best single (percentage points)")
+          plt.title("Dummy pair: active-QEC break-even sanity check")
+          plt.grid(True, alpha=0.3)
+          plt.legend()
+          plt.tight_layout()
+          plt.savefig(root / "excited_scale_comparison.svg")
+          plt.close()
+
+          summary_path = root / "dummy_pair_summary.csv"
+          with summary_path.open("w", newline="", encoding="utf-8") as handle:
+              writer = csv.DictWriter(handle, fieldnames=list(summaries[0]))
+              writer.writeheader()
+              writer.writerows(summaries)
+
+          readme = [
+              "# Dummy-pair sanity check",
+              "",
+              "Input physical hyperfine values:",
+              "",
+              "| Spin | A_parallel (kHz) | A_perp (kHz) | JSON -A_parallel (kHz) |",
+              "|---|---:|---:|---:|",
+              "| Dm50 | -50 | 10 | +50 |",
+              "| Dp80 | +80 | 9 | -80 |",
+              "",
+              "The code orders Dp80 first because |80|>|50|, then globally flips the coupling signs, giving the signed code ratio g2/g1=-50/80=-0.625.",
+              "",
+              "Simulation settings: B=0.05 T, pump rate=5/us, total time=20 us, ideal recovery at 10 and 20 us, 0.5 us sampling, and phase-calibrated six-state average fidelity.",
+              "",
+              "## Results",
+              "",
+              "| Excited scale | Final QEC | Final best single | Final QEC-best | Maximum QEC-best | Time of maximum (us) |",
+              "|---:|---:|---:|---:|---:|---:|",
+          ]
+          for row in summaries:
+              readme.append(
+                  f"| {row['excited_state_hyperfine_scale']:.1f} | "
+                  f"{row['final_qec_average_fidelity']:.10f} | "
+                  f"{row['final_best_single_average_fidelity']:.10f} | "
+                  f"{row['final_qec_minus_best_single']:+.10f} | "
+                  f"{row['maximum_qec_minus_best_single']:+.10f} | "
+                  f"{row['time_of_maximum_improvement_us']:.3f} |"
+              )
+          readme += [
+              "",
+              "## Plots",
+              "",
+              "- [r=0.1 full fidelity plot](r0p1/Dp80_Dm50_ideal_process.svg)",
+              "- [r=0.5 full fidelity plot](r0p5/Dp80_Dm50_ideal_process.svg)",
+              "- [QEC-minus-best comparison](excited_scale_comparison.svg)",
+              "",
+              "These are results of the repository's simplified five-level optical model, not an experimental prediction.",
+          ]
+          (root / "README.md").write_text("\n".join(readme) + "\n", encoding="utf-8")
+          PY
+
+      - name: Commit generated artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add outputs/dummy_pair
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+          else
+            git commit -m "Add dummy-pair sanity-check results"
+            git push origin HEAD:agent/fix-process-frame-pulsed-pairs
+          fi

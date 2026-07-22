@@ -22,6 +22,7 @@ from nv_5level_two_c13_simulation import (
     partial_trace_electron,
     phase_calibrated_six_state_fidelity,
     propagate_state_batch,
+    set_excited_state_hyperfine_from_ground,
     simulate_ideal_periodic_process,
 )
 
@@ -63,6 +64,48 @@ class QECAlgebraTests(unittest.TestCase):
         )
 
 
+class ExcitedStateHyperfineTests(unittest.TestCase):
+    @staticmethod
+    def electron_block(model, electron_index: int) -> np.ndarray:
+        tensor = model.H_lab.reshape(model.de, model.dn, model.de, model.dn)
+        return tensor[electron_index, :, electron_index, :]
+
+    def test_scaling_helper_uses_default_point_one(self) -> None:
+        par, perp = set_excited_state_hyperfine_from_ground((-0.05, 0.02), (0.1, 0.03))
+        np.testing.assert_allclose(par, (-0.005, 0.002), atol=0.0, rtol=1e-14)
+        np.testing.assert_allclose(perp, (0.01, 0.003), atol=0.0, rtol=1e-14)
+
+    def test_excited_ms_minus_one_hyperfine_is_scaled_ground_tensor(self) -> None:
+        scale = 0.23
+        model = build_nv_two_c13_lab_model(
+            A_par_MHz=(-0.049837, -0.033962),
+            A_perp_MHz=(0.101007, 0.026),
+            excited_state_hyperfine_scale=scale,
+        )
+        H_g1 = self.electron_block(model, 1)
+        H_e1 = self.electron_block(model, 3)
+        ground_hyperfine = H_g1 - model.H_free_n
+        excited_hyperfine = H_e1 - model.H_free_n
+        self.assertLess(np.max(np.abs(excited_hyperfine - scale * ground_hyperfine)), 2e-14)
+
+    def test_zero_scale_recovers_free_excited_precession(self) -> None:
+        model = build_nv_two_c13_lab_model(excited_state_hyperfine_scale=0.0)
+        H_e1 = self.electron_block(model, 3)
+        self.assertLess(np.max(np.abs(H_e1 - model.H_free_n)), 1e-14)
+
+    def test_default_model_scale_is_point_one_and_propagates_from_spins(self) -> None:
+        default_model = build_nv_two_c13_lab_model()
+        explicit_model = build_nv_two_c13_lab_model(excited_state_hyperfine_scale=0.1)
+        self.assertLess(np.max(np.abs(default_model.H_lab - explicit_model.H_lab)), 1e-14)
+        spins = load_dqp_spins(None)[:2]
+        params = model_params_from_spins(spins, 0.05, 5.0)
+        self.assertAlmostEqual(params["excited_state_hyperfine_scale"], 0.1)
+
+    def test_nonfinite_scale_is_rejected(self) -> None:
+        with self.assertRaises(ValueError):
+            build_nv_two_c13_lab_model(excited_state_hyperfine_scale=np.nan)
+
+
 class FrameTests(unittest.TestCase):
     def test_static_interaction_picture_rejects_nonzero_transverse_coupling(self) -> None:
         with self.assertRaises(ValueError):
@@ -74,6 +117,7 @@ class FrameTests(unittest.TestCase):
             A_par_MHz=(-0.049837, -0.033962),
             A_perp_MHz=(0.0, 0.0),
             W_pump_per_us=2.0,
+            excited_state_hyperfine_scale=0.1,
         )
         model = build_nv_two_c13_lab_model(**kwargs)
         H_rot, collapse_rot, _, _ = make_nv_two_c13_model(**kwargs, interaction_picture=True)
@@ -102,7 +146,12 @@ class ProcessBenchmarkTests(unittest.TestCase):
             reverse=True,
         )
         code = make_two_qubit_qec_code(tuple(spin.g_MHz for spin in selected))
-        params = model_params_from_spins(selected, B_T=0.05, pump_rate=2.0)
+        params = model_params_from_spins(
+            selected,
+            B_T=0.05,
+            pump_rate=2.0,
+            excited_state_hyperfine_scale=0.1,
+        )
         return simulate_ideal_periodic_process([0.0, 0.25, 0.50], params, code, 0.50)
 
     def test_best_single_is_pointwise_maximum(self) -> None:

@@ -1,0 +1,3 @@
+excited_state_hyperfine_scale,final_qec_average_fidelity,final_best_single_average_fidelity,final_qec_minus_best_single,maximum_qec_minus_best_single,time_of_maximum_improvement_us
+0.1,0.998581613039,0.99150353687,0.00707807616917,0.00707807616917,20.0
+0.5,0.998530378489,0.991320799038,0.00720957945088,0.00720957945088,20.0
