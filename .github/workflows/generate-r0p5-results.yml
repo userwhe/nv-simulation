@@ -1,14 +1,6 @@
 name: Generate excited-state hyperfine r=0.5 results
 
 on:
-  push:
-    branches:
-      - agent/fix-process-frame-pulsed-pairs
-    paths:
-      - .github/workflows/generate-r0p5-results.yml
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
@@ -16,7 +8,6 @@ permissions:
 
 jobs:
   generate-results:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the result branch
