@@ -7,6 +7,9 @@ on:
     paths:
       - .github/workflows/generate-equal-apar-dummy-results.yml
       - examples/dummy_equal_apar_pair.json
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -170,7 +173,7 @@ jobs:
       - name: Commit generated artifacts
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "4189826+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add outputs/dummy_equal_apar
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
