@@ -1,0 +1,4 @@
+[
+  {"name": "E80p10", "minus_A_parallel_kHz": -80.0, "A_perp_kHz": 10.0},
+  {"name": "E80p0", "minus_A_parallel_kHz": -80.0, "A_perp_kHz": 0.0}
+]
