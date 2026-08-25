@@ -12,6 +12,7 @@ import numpy as np
 
 from nv_qec.model import (
     NVModel,
+    OpticalParameters,
     build_nv_model,
     lindblad_generator,
     nuclear_free_unitary,
@@ -29,7 +30,13 @@ from nv_qec.qec import (
     six_state_average_memory_fidelity,
     six_state_test_states,
 )
-from nv_qec.simulation import SimulationConfig, simulate_qec_memory
+from nv_qec.simulation import (
+    SimulationConfig,
+    save_power_sweep_csv,
+    save_power_sweep_plot,
+    simulate_laser_power_sweep,
+    simulate_qec_memory,
+)
 from nv_qec.spins import BUILTIN_SPINS, SpinParameters
 
 
@@ -121,7 +128,7 @@ class FrameTests(unittest.TestCase):
             spin_a,
             spin_b,
             b_field_t=0.05,
-            pump_rate_per_us=2.0,
+            optical=OpticalParameters(laser_power_uw=2.0),
         )
         rotating_hamiltonian = model.hamiltonian_lab - np.kron(
             np.eye(model.electron_dimension), model.nuclear_free_hamiltonian
@@ -130,7 +137,7 @@ class FrameTests(unittest.TestCase):
             hamiltonian_lab=rotating_hamiltonian,
             collapse_operators=model.collapse_operators,
             nuclear_free_hamiltonian=model.nuclear_free_hamiltonian,
-            rates_per_us=model.rates_per_us,
+            optical=model.optical,
         )
 
         plus = np.array([1.0, 1.0], dtype=complex) / np.sqrt(2.0)
@@ -157,7 +164,7 @@ class FrameTests(unittest.TestCase):
             self.spin_a,
             self.spin_b,
             b_field_t=0.05,
-            pump_rate_per_us=2.0,
+            optical=OpticalParameters(laser_power_uw=2.0),
         )
         code = build_common_fluctuator_code(self.spin_a, self.spin_b)
         rng = np.random.default_rng(20260824)
@@ -189,7 +196,7 @@ class FrameTests(unittest.TestCase):
             self.spin_a,
             self.spin_b,
             b_field_t=0.05,
-            pump_rate_per_us=2.0,
+            optical=OpticalParameters(laser_power_uw=2.0),
         )
         code = build_common_fluctuator_code(self.spin_a, self.spin_b)
         generator = lindblad_generator(model)
@@ -261,9 +268,8 @@ class SimulationTests(unittest.TestCase):
             SimulationConfig(
                 duration_us=0.2,
                 sample_dt_us=0.1,
-                recovery_interval_us=0.1,
                 b_field_t=0.05,
-                pump_rate_per_us=0.0,
+                optical=OpticalParameters(laser_power_uw=0.0),
             ),
             self.spin_a,
             self.spin_b,
@@ -275,9 +281,8 @@ class SimulationTests(unittest.TestCase):
         config = SimulationConfig(
             duration_us=0.08,
             sample_dt_us=0.04,
-            recovery_interval_us=0.08,
             b_field_t=0.05,
-            pump_rate_per_us=2.0,
+            optical=OpticalParameters(laser_power_uw=2.0),
         )
         forward = simulate_qec_memory(config, self.spin_a, self.spin_b)
         reversed_result = simulate_qec_memory(config, self.spin_b, self.spin_a)
@@ -303,28 +308,27 @@ class SimulationTests(unittest.TestCase):
 
     def test_readout_recovery_is_final_only_and_does_not_mutate_trajectory(self) -> None:
         sampled = simulate_qec_memory(
-            SimulationConfig(0.08, 0.04, 0.08, 0.05, 2.0),
+            SimulationConfig(
+                duration_us=0.08,
+                sample_dt_us=0.04,
+                b_field_t=0.05,
+                optical=OpticalParameters(laser_power_uw=2.0),
+            ),
             self.spin_a,
             self.spin_b,
         )
         coarse = simulate_qec_memory(
-            SimulationConfig(0.08, 0.08, 0.08, 0.05, 2.0),
-            self.spin_a,
-            self.spin_b,
-        )
-        recovery_at_half_time = simulate_qec_memory(
-            SimulationConfig(0.08, 0.04, 0.04, 0.05, 2.0),
+            SimulationConfig(
+                duration_us=0.08,
+                sample_dt_us=0.08,
+                b_field_t=0.05,
+                optical=OpticalParameters(laser_power_uw=2.0),
+            ),
             self.spin_a,
             self.spin_b,
         )
 
-        # At 0.04 us, readout-only recovery must equal a scheduled recovery.
-        self.assertAlmostEqual(
-            sampled.qec_phase_corrected[1],
-            recovery_at_half_time.qec_phase_corrected[1],
-            places=11,
-        )
-        # The readout at 0.04 us must not alter the state continued to 0.08 us.
+        # Reading at 0.04 us must not alter the state continued to 0.08 us.
         self.assertAlmostEqual(
             sampled.qec_phase_corrected[-1],
             coarse.qec_phase_corrected[-1],
@@ -333,12 +337,55 @@ class SimulationTests(unittest.TestCase):
 
     def test_nonintegral_sampling_includes_exact_final_duration(self) -> None:
         result = simulate_qec_memory(
-            SimulationConfig(0.11, 0.04, 0.2, 0.05, 0.0),
+            SimulationConfig(
+                duration_us=0.11,
+                sample_dt_us=0.04,
+                b_field_t=0.05,
+                optical=OpticalParameters(laser_power_uw=0.0),
+            ),
             self.spin_a,
             self.spin_b,
         )
         np.testing.assert_allclose(result.t_us, [0.0, 0.04, 0.08, 0.11])
         self.assertEqual(result.t_us[-1], result.config.duration_us)
+
+    def test_laser_power_sweep_uses_zero_perpendicular_spins(self) -> None:
+        spin_a = SpinParameters(2, BUILTIN_SPINS[2].a_parallel_khz, 0.0)
+        spin_b = SpinParameters(7, BUILTIN_SPINS[7].a_parallel_khz, 0.0)
+        config = SimulationConfig(
+            duration_us=0.04,
+            sample_dt_us=0.02,
+            b_field_t=0.05,
+            optical=OpticalParameters(laser_power_uw=1.0),
+        )
+        results = simulate_laser_power_sweep(config, spin_a, spin_b, (0.1, 1.0))
+
+        self.assertEqual(
+            [result.config.optical.laser_power_uw for result in results],
+            [0.1, 1.0],
+        )
+        for result in results:
+            np.testing.assert_allclose(result.t_us, [0.0, config.duration_us])
+            self.assertEqual(result.spin_a.a_perp_khz, 0.0)
+            self.assertEqual(result.spin_b.a_perp_khz, 0.0)
+
+        direct = simulate_qec_memory(config, spin_a, spin_b)
+        self.assertAlmostEqual(
+            results[-1].qec_phase_corrected[-1],
+            direct.qec_phase_corrected[-1],
+            places=11,
+        )
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            csv_path = save_power_sweep_csv(results, directory / "sweep.csv")
+            svg_path = save_power_sweep_plot(results, directory / "sweep.svg")
+            self.assertTrue(csv_path.is_file())
+            self.assertTrue(svg_path.is_file())
+            self.assertIn("laser_power_uw", csv_path.read_text(encoding="utf-8"))
+            svg_text = svg_path.read_text(encoding="utf-8")
+            self.assertIn("Laser-power sweep", svg_text)
+            self.assertIn("A⊥=0", svg_text)
 
 
 class CommandLineTests(unittest.TestCase):
@@ -360,8 +407,12 @@ class CommandLineTests(unittest.TestCase):
                 "sample_dt_us must be finite and positive",
             ),
             (
-                ["--spin-ids", "3", "7", "--recovery-interval-us", "0"],
-                "recovery_interval_us must be finite and positive",
+                ["--spin-ids", "3", "7", "--laser-power-uw", "-1"],
+                "laser_power_uw must be finite and nonnegative",
+            ),
+            (
+                ["--all-pairs", "--spin-ids", "3", "7"],
+                "cannot be combined with a spin-pair selection",
             ),
         )
         for arguments, expected_error in cases:
@@ -395,9 +446,7 @@ class CommandLineTests(unittest.TestCase):
                     "0.02",
                     "--sample-dt-us",
                     "0.02",
-                    "--recovery-interval-us",
-                    "0.01",
-                    "--pump-rate-per-us",
+                    "--laser-power-uw",
                     "0",
                     "--output-dir",
                     str(output_directory),
@@ -426,11 +475,55 @@ class CommandLineTests(unittest.TestCase):
                     "spin_7_phase_corrected",
                     "best_single",
                     "qec_advantage",
-                    "recovery_count",
                 ],
             )
             self.assertIn("QEC fidelity", completed.stdout)
-            self.assertIn("Benchmark: ideal instantaneous recovery", completed.stdout)
+            self.assertIn("Benchmark: ideal recovery at readout only", completed.stdout)
+            svg_text = svg_path.read_text(encoding="utf-8")
+            self.assertIn("A∥=-49.837", svg_text)
+            self.assertIn("A⊥=26", svg_text)
+            self.assertNotIn("Best single-spin envelope", svg_text)
+
+
+class OpticalParametersTests(unittest.TestCase):
+    def test_power_calibration_and_rates_are_explicit(self) -> None:
+        optical = OpticalParameters(
+            laser_power_uw=4.0,
+            excitation_rate_per_us_per_uw=0.25,
+            radiative_e0_rate_per_us=2.0,
+            radiative_e1_rate_per_us=3.0,
+            isc_e0_rate_per_us=4.0,
+            isc_e1_rate_per_us=5.0,
+            singlet_to_g0_rate_per_us=6.0,
+            singlet_to_g1_rate_per_us=7.0,
+        )
+        self.assertEqual(optical.pump_rate_per_us, 1.0)
+        self.assertEqual(
+            optical.rates_per_us,
+            {
+                "optical_pump": 1.0,
+                "radiative_e0": 2.0,
+                "radiative_e1": 3.0,
+                "intersystem_crossing_e0": 4.0,
+                "intersystem_crossing_e1": 5.0,
+                "singlet_to_g0": 6.0,
+                "singlet_to_g1": 7.0,
+            },
+        )
+        model = build_nv_model(
+            BUILTIN_SPINS[3],
+            BUILTIN_SPINS[7],
+            b_field_t=0.05,
+            optical=optical,
+        )
+        self.assertIs(model.optical, optical)
+
+    def test_negative_rate_is_rejected(self) -> None:
+        with self.assertRaisesRegex(
+            ValueError,
+            "isc_e1_rate_per_us must be finite and nonnegative",
+        ):
+            OpticalParameters(isc_e1_rate_per_us=-1.0)
 
 
 if __name__ == "__main__":

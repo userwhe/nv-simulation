@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 import numpy as np
@@ -26,13 +26,58 @@ _Z = np.array([[1.0, 0.0], [0.0, -1.0]], dtype=complex)
 
 
 @dataclass(frozen=True)
+class OpticalParameters:
+    """Five-level optical rates and the laser-power calibration."""
+
+    laser_power_uw: float = 5.0
+    excitation_rate_per_us_per_uw: float = 1.0
+    radiative_e0_rate_per_us: float = (1.0 - 0.14) / 0.013
+    radiative_e1_rate_per_us: float = (1.0 - 0.55) / 0.007
+    isc_e0_rate_per_us: float = 0.14 / 0.013
+    isc_e1_rate_per_us: float = 0.55 / 0.007
+    singlet_to_g0_rate_per_us: float = 0.85 / 0.180
+    singlet_to_g1_rate_per_us: float = (1.0 - 0.85) / 0.180
+
+    def __post_init__(self) -> None:
+        for field_name in (
+            "laser_power_uw",
+            "excitation_rate_per_us_per_uw",
+            "radiative_e0_rate_per_us",
+            "radiative_e1_rate_per_us",
+            "isc_e0_rate_per_us",
+            "isc_e1_rate_per_us",
+            "singlet_to_g0_rate_per_us",
+            "singlet_to_g1_rate_per_us",
+        ):
+            value = getattr(self, field_name)
+            if not np.isfinite(value) or value < 0.0:
+                raise ValueError(f"{field_name} must be finite and nonnegative")
+
+    @property
+    def pump_rate_per_us(self) -> float:
+        return self.laser_power_uw * self.excitation_rate_per_us_per_uw
+
+    @property
+    def rates_per_us(self) -> dict[str, float]:
+        return {
+            "optical_pump": self.pump_rate_per_us,
+            "radiative_e0": self.radiative_e0_rate_per_us,
+            "radiative_e1": self.radiative_e1_rate_per_us,
+            "intersystem_crossing_e0": self.isc_e0_rate_per_us,
+            "intersystem_crossing_e1": self.isc_e1_rate_per_us,
+            "singlet_to_g0": self.singlet_to_g0_rate_per_us,
+            "singlet_to_g1": self.singlet_to_g1_rate_per_us,
+        }
+
+
+@dataclass(frozen=True)
 class NVModel:
     """Lab-frame generator inputs in the internal rad/us convention."""
 
     hamiltonian_lab: np.ndarray
     collapse_operators: tuple[np.ndarray, ...]
     nuclear_free_hamiltonian: np.ndarray
-    rates_per_us: Mapping[str, float]
+    optical: OpticalParameters
     electron_dimension: int = ELECTRON_DIMENSION
     nuclear_dimension: int = NUCLEAR_DIMENSION
 
@@ -86,7 +131,7 @@ def build_nv_model(
     spin_b: SpinParameters,
     *,
     b_field_t: float,
-    pump_rate_per_us: float,
+    optical: OpticalParameters,
 ) -> NVModel:
     """Build the simplified five-electron-level/two-spin lab-frame model."""
 
@@ -94,8 +139,8 @@ def build_nv_model(
         raise ValueError("spin ids must be distinct")
     if not np.isfinite(b_field_t):
         raise ValueError("b_field_t must be finite")
-    if not np.isfinite(pump_rate_per_us) or pump_rate_per_us < 0.0:
-        raise ValueError("pump_rate_per_us must be finite and nonnegative")
+    if not isinstance(optical, OpticalParameters):
+        raise TypeError("optical must be an OpticalParameters instance")
 
     larmor, a_parallel, a_perp = _convert_inputs_to_angular_frequency(
         spin_a, spin_b, b_field_t
@@ -132,23 +177,7 @@ def build_nv_model(
         projector = _transition(ELECTRON_DIMENSION, electron_state, electron_state)
         hamiltonian += np.kron(projector, nuclear_hamiltonian)
 
-    excited_lifetime_e0_us = 0.013
-    excited_lifetime_e1_us = 0.007
-    intersystem_crossing_e0 = 0.14
-    intersystem_crossing_e1 = 0.55
-    singlet_lifetime_us = 0.180
-    singlet_branch_to_g0 = 0.85
-    decay_e0 = 1.0 / excited_lifetime_e0_us
-    decay_e1 = 1.0 / excited_lifetime_e1_us
-    rates = {
-        "optical_pump": float(pump_rate_per_us),
-        "radiative_e0": (1.0 - intersystem_crossing_e0) * decay_e0,
-        "radiative_e1": (1.0 - intersystem_crossing_e1) * decay_e1,
-        "intersystem_crossing_e0": intersystem_crossing_e0 * decay_e0,
-        "intersystem_crossing_e1": intersystem_crossing_e1 * decay_e1,
-        "singlet_to_g0": singlet_branch_to_g0 / singlet_lifetime_us,
-        "singlet_to_g1": (1.0 - singlet_branch_to_g0) / singlet_lifetime_us,
-    }
+    rates = optical.rates_per_us
 
     nuclear_identity = np.eye(NUCLEAR_DIMENSION, dtype=complex)
 
@@ -170,7 +199,7 @@ def build_nv_model(
         hamiltonian_lab=hamiltonian,
         collapse_operators=collapse_operators,
         nuclear_free_hamiltonian=free_hamiltonian,
-        rates_per_us=rates,
+        optical=optical,
     )
 
 
@@ -270,6 +299,7 @@ __all__ = [
     "ELECTRON_DIMENSION",
     "NUCLEAR_DIMENSION",
     "NVModel",
+    "OpticalParameters",
     "build_nv_model",
     "hermitian_part",
     "lindblad_generator",
