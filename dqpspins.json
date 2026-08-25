@@ -1,9 +1,0 @@
-[
-  {"name": "S1", "minus_A_parallel_kHz": 5.616, "A_perp_kHz": 32.847},
-  {"name": "S2", "minus_A_parallel_kHz": 224.217, "A_perp_kHz": 189.318},
-  {"name": "S3", "minus_A_parallel_kHz": 49.837, "A_perp_kHz": 101.007},
-  {"name": "S4", "minus_A_parallel_kHz": 15.734, "A_perp_kHz": 19.295},
-  {"name": "S5", "minus_A_parallel_kHz": 3.832, "A_perp_kHz": 21.140},
-  {"name": "S6", "minus_A_parallel_kHz": -7.015, "A_perp_kHz": 38.250},
-  {"name": "X2", "minus_A_parallel_kHz": 33.962, "A_perp_kHz": 26.000}
-]
